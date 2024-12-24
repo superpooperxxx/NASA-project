@@ -1,9 +1,12 @@
 const launchesModel = require("../../models/launches.model");
 
-function getAllLaunches(req, res) {
-  res.status(200).json(launchesModel.getAllLaunches());
+async function getAllLaunches(req, res) {
+  const launches = await launchesModel.getAllLaunches();
+
+  res.status(200).json(launches);
 }
-function addNewLaunch(req, res) {
+
+async function addNewLaunch(req, res) {
   const launch = req.body;
 
   if (
@@ -29,23 +32,25 @@ function addNewLaunch(req, res) {
     return;
   }
 
-  const createdLaunch = launchesModel.addNewLaunch(launch);
+  const createdLaunch = await launchesModel.addNewLaunch(launch);
 
   res.status(201).json(createdLaunch);
 }
 
-function abortLaunch(req, res) {
+async function abortLaunch(req, res) {
   const { id } = req.params;
 
-  if (!launchesModel.existsLaunchWithId(+id)) {
+  const exists = await launchesModel.existsLaunchWithId(+id);
+
+  if (!exists) {
     return res.status(404).json({
       error: "Not Found",
     });
   }
 
-  const abortedLaunch = launchesModel.abortLaunch(+id);
+  await launchesModel.abortLaunch(+id);
 
-  return res.status(200).json(abortedLaunch);
+  return res.sendStatus(204);
 }
 
 module.exports = {
