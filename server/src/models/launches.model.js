@@ -46,14 +46,17 @@ async function saveLaunch(launch) {
 async function addNewLaunch(launch) {
   const newFlightNumber = (await getLatestFlightNumber()) + 1;
 
-  const newLaunch = Object.assign(launch, {
+  const newLaunch = {
+    ...launch,
     flightNumber: newFlightNumber,
     customers: ["ZTM", "NASA"],
     upcoming: true,
     success: true,
-  });
+  };
 
-  return await saveLaunch(newLaunch);
+  await saveLaunch(newLaunch);
+
+  return newLaunch;
 }
 
 async function abortLaunch(id) {
